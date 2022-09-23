@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     View, 
     Text, 
@@ -13,40 +13,59 @@ import { SkillCard } from '../components/SkillCard';
 export function Home() {
     const [newSkill, setNewSkill] = useState('');
     const [mySkills, setMySkills] = useState([]);
+    const [greeting, setGreeting] = useState('');
 
     function handleAddNewSkill() {
         setMySkills(oldState => [...oldState, newSkill]);
     }
 
-  return (
-    <View style={styles.container}>
-      <Text 
-        style={styles.title}>Welcome, Fernando!
-      </Text>
+    useEffect(() => {
+        const currentHour = new Date().getHours();
 
-      <TextInput
-        style={styles.input} 
-        placeholder="New skill"
-        placeholderTextColor="#555"
-        onChangeText={setNewSkill}
-      />
+        if (currentHour < 12) {
+            setGreeting('Good Morning');
+        } else if (currentHour >= 12 && greeting < 18) {
+            setGreeting('Good Afternoon');
+        } else {
+            setGreeting('Good Night');
+        }
 
-        <Button onPress={handleAddNewSkill} />
+    }, []);
 
-        <Text style={[styles.title, { marginVertical: 20 }]}>
-            My Skill
-        </Text>
+    return (
+        <View style={styles.container}>
 
-        <FlatList
-            data={mySkills}
-            keyExtractor={item => item}
-            renderItem={({ item }) => (
-                <SkillCard skill={item} />
-            )}
-        />
+            <Text 
+                style={styles.title}>Welcome, Fernando!
+            </Text>
 
-    </View>
-  )
+            <Text style={styles.greetings}>
+                    {greeting}
+            </Text>
+
+            <TextInput
+                style={styles.input} 
+                placeholder="New skill"
+                placeholderTextColor="#555"
+                onChangeText={setNewSkill}
+            />
+
+            <Button onPress={handleAddNewSkill} />
+
+            <Text style={[styles.title, { marginVertical: 20 }]}>
+                My Skill
+            </Text>
+
+            <FlatList
+                data={mySkills}
+                keyExtractor={item => item}
+                renderItem={({ item }) => (
+                    <SkillCard skill={item} />
+                )}
+            />
+
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -70,4 +89,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         borderRadius: 7,
     },
+    greetings: {
+        color: '#FFF',
+    }
 });
